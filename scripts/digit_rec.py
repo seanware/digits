@@ -1,4 +1,4 @@
-#This script will use logistic regression to recognize digits.
+#This script uses a support vector machine to recognize digits.
 
 import numpy as np
 import pandas as pd
@@ -13,11 +13,13 @@ test_data = "digits\\test.csv"
 def load_clean(filename):
 	training = pd.read_csv(filename)
 	Data = training.values
-	#scale the data for use in a SVM
+	
 	return Data
 	
 	
 def create_index(data, n):
+	'''Helper function to be used to help randomly sample data
+	'''
 	train_ix = sample(xrange(len(data)) , n)
 	test_ix = [i for i in xrange(2*n) if i not in train_ix]
 	return train_ix, test_ix
@@ -35,7 +37,7 @@ def create_training_data(data, num_samples =3000):
 	return X_train, y_train, X_test, y_test
 
 
-#implememt logistic regression to model the digits on 1000 samples
+#implememtsuppor vector machine to model the digits on 1000 samples
 
 def predictions(model, x_train,y_train, x_test):
 	clf = model
@@ -54,6 +56,8 @@ def model_acc(predictions, validation):
 
 
 def recognize(model, filename):
+	''' Apply the model to new data
+	'''
 	data = load_clean(filename)
 	X_tr, y_tr, X_ts, y_ts = create_training_data(data)
 	y_prd, clf = predictions(model,X_tr, y_tr, X_ts)
@@ -61,7 +65,8 @@ def recognize(model, filename):
 	return accuracy, clf
 	
 def submit_probabilities(model, train_file, test_file):
-	
+	''' Create probabilities for the submission
+	'''
 	acc, clf = recognize(model, train_file)
 	validate_data = load_clean(test_file)
 	for m in xrange(len(validate_data)):
@@ -69,6 +74,6 @@ def submit_probabilities(model, train_file, test_file):
 	
 if __name__=="__main__":
 	print recognize(svm.SVC(kernel='polynomial'),train_data)
-	#submit_probabilities(svm.SVC(kernel='linear'), train_data, test_data)
+	
 	
 	
